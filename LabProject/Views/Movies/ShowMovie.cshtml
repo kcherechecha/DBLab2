@@ -1,0 +1,52 @@
+﻿@model IEnumerable<LabProject.Models.Movie>
+
+@{
+    ViewData["Title"] = "ShowMovie";
+}
+
+<div>
+<h1 class="mt-5">Фільм на сеансі</h1>
+
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieDuration)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieRating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieReleaseDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieDuration)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieRating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieReleaseDate)
+            </td>
+            <td>
+                    <a href="@Url.Action("Details", new { id = item.MovieId })"><input type="button" value="Команда" class="btn btn-info" /></a>
+                    <a href="@Url.Action("MovieGenreList", "Genres", new { movieId = item.MovieId })"><input type="button" value="Жанри" class="btn btn-info" /></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,42 @@
+﻿@model IEnumerable<LabProject.Models.MovieCast>
+
+@{
+    ViewData["Title"] = "AddCastPosition";
+}
+
+<h1 class="mt-5">Додати в команду</h1>
+
+<p>
+    <a asp-action="Create"><input type="button" value="Додати члена команди" class="btn btn-info disabled mt-2 mb-3" /></a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CastMember)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Position)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CastMember.CastMemberFullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Movie.MovieName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Position.PositionName)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,35 @@
+﻿@model IEnumerable<LabProject.Models.MovieCast>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="mt-5">Команда фільму @ViewBag.MovieName</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CastMember)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Position)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CastMember.CastMemberFullName)
+            </td>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.Position.PositionName)
+            </td>
+            
+        </tr>
+}
+    </tbody>
+</table>

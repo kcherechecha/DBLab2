@@ -1,0 +1,51 @@
+﻿@model IEnumerable<LabProject.Models.MovieCast>
+
+@{
+    ViewData["Title"] = "AddedMovieCastList";
+}
+
+<h1 class="mt-5 mb-2">Команда фільму</h1>
+
+<p>
+    <a href="@Url.Action("Create", new { movieId = ViewBag.MovieId})"><input type="button" value="Додати в команду" class="btn btn-outline-info"/></a>
+
+   
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CastMember)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Position)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CastMember.CastMemberFullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Movie.MovieName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Position.PositionName)
+            </td>
+            <td>
+                <a asp-action="Delete" asp-route-id="@item.MovieCastId"><input value="Delete" type="button" class="btn btn-outline-info"/></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+@if (ViewBag.buttonCheck)
+{
+    <a href="@Url.Action("Index", "Movies")"><input type="button" value="Завершити додавання фільму" class="btn btn-info mt-2" style="font-size:18px" /></a>
+}

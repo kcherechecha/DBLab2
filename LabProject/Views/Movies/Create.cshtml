@@ -1,0 +1,45 @@
+﻿@model LabProject.Models.Movie
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Додати фільм</h1>
+<a asp-action="Index"> <input type="submit" value="До списку фільмів" class="btn btn-outline-info mt-2" /></a>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="MovieName" class="control-label"></label>
+                <input asp-for="MovieName" class="form-control" />
+                <span asp-validation-for="MovieName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MovieDuration" class="control-label"></label>
+                <input asp-for="MovieDuration" class="form-control" />
+                <span asp-validation-for="MovieDuration" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MovieRating" class="control-label"></label>
+                <input asp-for="MovieRating" class="form-control" />
+                <span asp-validation-for="MovieRating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MovieReleaseDate" class="control-label"></label>
+                <input asp-for="MovieReleaseDate" class="form-control" />
+                <span asp-validation-for="MovieReleaseDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Додати" class="btn btn-info mt-3" style="font-size:18px" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

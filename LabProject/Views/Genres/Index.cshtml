@@ -1,0 +1,58 @@
+﻿@model IEnumerable<LabProject.Models.Genre>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="mt-5 mb-4">Обрати жанр</h1>
+
+@*<p>
+    <a asp-action="Create">Create New</a>
+</p>*@
+@*@Html.ActionLink("Додати moviecast","Create", "MovieCasts" ,new {movieId = ViewBag.MovieId})*@
+
+<table class="table">
+    <thead>
+        <tr>
+            @*<th>
+                @Html.DisplayNameFor(model => model.GenreName)
+            </th>*@
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.GenreName)
+            </td>
+            <td>
+                @*<a asp-action="Edit" asp-route-id="@item.GenreId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.GenreId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.GenreId">Delete</a>*@
+
+
+                @*<input type="hidden" name="movieId" value="@ViewBag.MovieId" />
+                <input type="hidden" name="genreId" value="@item.GenreId" />
+                <a asp-action="ConfirmGenre" asp-route-id="@item.GenreId">Confirm</a>*@
+
+
+                @*<form asp-action="ConfirmGenre" method="post">*@
+               
+                @*<a>Confirm</a>*@
+
+                @*</form>*@
+
+
+               @* @Html.ActionLink("Confirm", "ConfirmGenre", new {movieId = ViewBag.MovieId})*@
+
+               <form asp-action="ConfirmGenre" method="post">
+                   <input type="hidden" name="genreId" value="@item.GenreId" />
+                   <input type="hidden"name="movieId" value="@ViewBag.MovieId" />
+                   <button type="submit" class="btn btn-info">Додати</button>
+               </form>
+            </td>
+        </tr>
+}
+
+    </tbody>
+</table>

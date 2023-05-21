@@ -1,0 +1,39 @@
+﻿@model LabProject.Models.MovieCast
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Редагувати</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MovieCastId" />
+            <div class="form-group">
+                <label asp-for="CastMemberId" class="control-label"></label>
+                <select asp-for="CastMemberId" class="form-control" asp-items="ViewBag.CastMemberId"></select>
+                <span asp-validation-for="CastMemberId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PositionId" class="control-label"></label>
+                <select asp-for="PositionId" class="form-control" asp-items="ViewBag.PositionId"></select>
+                <span asp-validation-for="PositionId" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <input type="submit" value="Зберегти зміни" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">До списку команди</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

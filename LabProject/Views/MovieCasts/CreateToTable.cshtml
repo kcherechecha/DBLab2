@@ -1,0 +1,41 @@
+﻿@model LabProject.Models.MovieCast
+
+@{
+    ViewData["Title"] = "CreateToTable";
+}
+
+<h1>Додати в команду</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CastMemberId" class="control-label"></label>
+                <select asp-for="CastMemberId" class="form-control" asp-items="ViewBag.CastMemberId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="PositionId" class="control-label"></label>
+                <select asp-for="PositionId" class="form-control" asp-items="ViewBag.PositionId"></select>
+            </div>
+           
+
+            <input type="hidden" value="@ViewBag.MovieId" name="MovieId" />
+
+            <div class="form-group">
+                <input type="submit" value="Додати" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">До списку фільмів</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

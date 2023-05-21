@@ -1,0 +1,47 @@
+﻿@model IEnumerable<LabProject.Models.Cinema>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@if (ViewBag.hidden != 1)
+{
+    <h1 class="mt-5">Кінотеатри</h1>
+    <p>
+        <a asp-action="Create"> <input type="button" value="Додати кінотеатр" class="btn btn-info disabled mt-2 mb-3" /></a>
+    </p>
+}
+else
+{
+    <h1 class="mt-5">Кінотеатри за запитом</h1>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CinemaName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CinemaAddress)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CinemaName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CinemaAddress)
+            </td>
+            <td>
+                    <a asp-action="Details" asp-route-id="@item.CinemaId"> <input type="button" value="Зали" class="btn btn-info" /></a>
+                    <a asp-action="Edit" asp-route-id="@item.CinemaId"> <input type="button" value="Редагувати" class="btn btn-outline-info" /></a>
+                    <a asp-action="Delete" asp-route-id="@item.CinemaId"> <input type="button" value="Видалити" class="btn btn-outline-info" /></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

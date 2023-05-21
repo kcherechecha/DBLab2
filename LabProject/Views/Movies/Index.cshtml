@@ -1,0 +1,54 @@
+﻿@model IEnumerable<LabProject.Models.Movie>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="mt-5">Фільми</h1>
+<a asp-action="Create"> <input type="button" value="Додати фільм" class="btn btn-info disabled mt-2 mb-3" /></a>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieDuration)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieRating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieReleaseDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieDuration)хв
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieRating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieReleaseDate)
+            </td>
+            <td>
+                    <a href="@Url.Action("Details", new { id = item.MovieId })"><input type="button" value="Команда" class="btn btn-info" /></a>
+                    <a href="@Url.Action("MovieGenreList", "Genres", new { movieId = item.MovieId })"><input type="button" value="Жанри" class="btn btn-info" /></a>
+                    <a href="@Url.Action("Edit", new { id = item.MovieId })"><input type="button" value="Редагувати" class="btn btn-outline-info" /></a>
+                    <a href="@Url.Action("Delete", new { id = item.MovieId })"><input type="button" value="Видалити" class="btn btn-outline-info" /></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+

@@ -1,0 +1,40 @@
+﻿@model LabProject.Models.Hall
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div>
+<h1>Додати нову залу</h1>
+    <a href="@Url.Action("Details", "Cinemas", new { id = ViewBag.CinemaId})"> <input type="submit" value="До списку зал" class="btn btn-outline-info mt-2" /></a>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="HallName" class="control-label"></label>
+                <input asp-for="HallName" class="form-control" />
+                <span asp-validation-for="HallName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HallCapacity" class="control-label"></label>
+                <input asp-for="HallCapacity" class="form-control" />
+                <span asp-validation-for="HallCapacity" class="text-danger"></span>
+            </div>
+
+            <input type="hidden" value="@ViewBag.CinemaId" name="CinemaId" />
+
+            <div class="form-group">
+                <input type="submit" value="Додати" class="btn btn-info mt-3" style="font-size:18px" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

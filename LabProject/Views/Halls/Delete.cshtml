@@ -1,0 +1,38 @@
+﻿@model LabProject.Models.Hall
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Видалити залу</h1>
+
+<h3>Ви впевнені що хочете видалити залу?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HallName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HallName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HallCapacity)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HallCapacity)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Cinema)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Cinema.CinemaName)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="HallId" />
+ <input type="submit" value="Видалити" class="btn btn-danger" style="font-size:15px" /> 
+        <button type="button" onclick="location.href=' @Url.Action("Details", "Cinemas", new { id = Model.CinemaId})'" class="btn btn-outline-info" style="font-size:15px">До списку зал</button>
+    </form>
+</div>

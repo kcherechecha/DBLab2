@@ -1,0 +1,48 @@
+﻿@model LabProject.Models.Session
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div>
+<h1>Додати сеанс</h1>
+    <a href="@Url.Action("Details", "Halls", new { id = ViewBag.HallId})"> <input type="submit" value="До списку сеансів" class="btn btn-outline-info mt-2" /></a>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="SessionNumber" class="control-label"></label>
+                <input asp-for="SessionNumber" class="form-control" />
+                <span asp-validation-for="SessionNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SessionDateTime" class="control-label"></label>
+                <input asp-for="SessionDateTime" class="form-control" />
+                <span asp-validation-for="SessionDateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StatusId" class="control-label"></label>
+                <select asp-for="StatusId" class="form-control" asp-items="ViewBag.StatusId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="MovieId" class="control-label"></label>
+                <select asp-for="MovieId" class ="form-control" asp-items="ViewBag.MovieId"></select>
+            </div>
+            
+            <input type="hidden" value="@ViewBag.HallId" name="HallId" />
+
+            <div class="form-group">
+                <input type="submit" value="Додати" class="btn btn-info mt-3" style="font-size:18px" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

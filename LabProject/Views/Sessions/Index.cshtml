@@ -1,0 +1,65 @@
+﻿@model IEnumerable<LabProject.Models.Session>
+
+@{
+    ViewData["Title"] = "Сеанси в залі";
+}
+
+<div>
+    
+    @if (ViewBag.hidden != 1)
+    {
+        <h1 class="mt-5">Сеанси в залі @ViewBag.HallName</h1>
+        <a href='@Url.Action("Create", new { HallId = ViewBag.HallId })'>
+            <input type="button" class="btn btn-info disabled mt-2 mb-3" value="Додати новий сеанс" />
+        </a>
+    }
+    else
+    {
+        <h1 class="mt-5">Сеанси за запитом</h1>
+    }
+</div>
+    
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SessionNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SessionDateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SessionNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SessionDateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status.StatusName)
+            </td>
+           
+            <td>
+                @Html.DisplayFor(modelItem => item.Movie.MovieName)
+            </td>
+            <td>
+                    <a href="@Url.Action("Details", new { id = item.SessionId })"><input type="button" value="Про фільм" class="btn btn-info" /></a>
+                    <a href="@Url.Action("Edit", new { id = item.SessionId })"><input type="button" value="Редагувати" class="btn btn-outline-info" /></a>
+                    <a href="@Url.Action("Delete", new { id = item.SessionId })"><input type="button" value="Видалити" class="btn btn-outline-info" /></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+

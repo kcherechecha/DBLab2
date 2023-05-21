@@ -1,0 +1,42 @@
+﻿@model IEnumerable<LabProject.Models.Genre>
+
+@{
+    ViewData["Title"] = "AddedGenreList";
+}
+
+<h1 class="mt-5">Обрані жанри</h1>
+
+    @*<a asp-action="Create">Create New</a>*@
+<a href="@Url.Action("Index", new {movieId = ViewBag.MovieId})"><input type="button" value="Додати жанр" class="btn btn-info disabled mt-2 mb-3" /></a>
+    @*@Html.ActionLink("AddGenre", "Index", new {movieId = ViewBag.MovieId})*@
+    @if (ViewBag.buttonCheck == true)
+    {
+        @*@Html.ActionLink("AddCast", "ProceedToMovieCast", new {movieId = ViewBag.MovieId})*@
+    <a href="@Url.Action("ProceedToMovieCast", new {movieId = ViewBag.MovieId})"><input type="button" value="Додати команду" class="btn btn-info disabled mt-2 mb-3" /></a>
+    }
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.GenreName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.GenreName)
+            </td>
+            <td>
+                @*<a asp-action="Edit" asp-route-id="@item.GenreId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.GenreId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.GenreId">Delete</a>*@
+                    <a href="@Url.Action("Delete", new {movieId = ViewBag.MovieId, id = item.GenreId})"><input type="button" value="Видалити" class="btn btn-outline-info" /></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
