@@ -36,11 +36,14 @@ else
             <td>
                 @Html.DisplayFor(modelItem => item.CinemaAddress)
             </td>
+                @if (ViewBag.hidden != 1)
+                {
             <td>
                     <a asp-action="Details" asp-route-id="@item.CinemaId"> <input type="button" value="Зали" class="btn btn-info" /></a>
                     <a asp-action="Edit" asp-route-id="@item.CinemaId"> <input type="button" value="Редагувати" class="btn btn-outline-info" /></a>
                     <a asp-action="Delete" asp-route-id="@item.CinemaId"> <input type="button" value="Видалити" class="btn btn-outline-info" /></a>
             </td>
+                }
         </tr>
 }
     </tbody>

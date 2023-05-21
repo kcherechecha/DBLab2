@@ -5,8 +5,10 @@
 }
 
 <h1 class="mt-5">Фільми</h1>
-<a asp-action="Create"> <input type="button" value="Додати фільм" class="btn btn-info disabled mt-2 mb-3" /></a>
-
+@if (ViewBag.hidden != 1)
+{
+    <a asp-action="Create"> <input type="button" value="Додати фільм" class="btn btn-info disabled mt-2 mb-3" /></a>
+}
 
 <table class="table">
     <thead>
@@ -41,12 +43,15 @@
             <td>
                 @Html.DisplayFor(modelItem => item.MovieReleaseDate)
             </td>
-            <td>
-                    <a href="@Url.Action("Details", new { id = item.MovieId })"><input type="button" value="Команда" class="btn btn-info" /></a>
+                @if (ViewBag.hidden != 1)
+                {
+                    <td>
+                        <a href="@Url.Action("Details", new { id = item.MovieId })"><input type="button" value="Команда" class="btn btn-info" /></a>
                     <a href="@Url.Action("MovieGenreList", "Genres", new { movieId = item.MovieId })"><input type="button" value="Жанри" class="btn btn-info" /></a>
                     <a href="@Url.Action("Edit", new { id = item.MovieId })"><input type="button" value="Редагувати" class="btn btn-outline-info" /></a>
                     <a href="@Url.Action("Delete", new { id = item.MovieId })"><input type="button" value="Видалити" class="btn btn-outline-info" /></a>
             </td>
+            }
         </tr>
 }
     </tbody>

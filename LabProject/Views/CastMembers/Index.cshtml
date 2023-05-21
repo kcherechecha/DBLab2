@@ -6,9 +6,12 @@
 
 <h1 class="mt-5">Кіновиробництво</h1>
 
-<p>
-    <a asp-action="Create"> <input type="button" value="Додати людину" class="btn btn-info disabled mt-2 mb-3" /></a>
-</p>
+@if (ViewBag.hidden != 1)
+{
+    <p>
+        <a asp-action="Create"> <input type="button" value="Додати людину" class="btn btn-info disabled mt-2 mb-3" /></a>
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
@@ -24,10 +27,13 @@
             <td>
                 @Html.DisplayFor(modelItem => item.CastMemberFullName)
             </td>
+                @if (ViewBag.hidden != 1)
+                {
             <td>
                     <a asp-action="Edit" asp-route-id="@item.CastMemberId"> <input type="button" value="Редагувати" class="btn btn-outline-info" /></a>
                     <a asp-action="Delete" asp-route-id="@item.CastMemberId"> <input type="button" value="Видалити" class="btn btn-outline-info" /></a>
             </td>
+                }
         </tr>
 }
     </tbody>

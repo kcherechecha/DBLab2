@@ -1,4 +1,4 @@
-﻿
+﻿@model LabProject.Models.Movie
 
 @{
     ViewData["Title"] = "Index";
@@ -24,14 +24,14 @@
     <input type="submit" class="btn btn-primary mt-1 mb-1" style="font-size:12px; padding:5px 7px; border-radius: 10px" value="Запит" />
 }
 <p>3. Знайти зали в яких кількість сеансів більше заданого параметру</p>
-@using (Html.BeginForm("SessionQuantityByHalls", "Halls"))
+@using (Html.BeginForm("SessionQuantityByHalls", "Halls", new { hidden = 1 }))
 {
     @Html.TextBox("sessionsQuantity", " ", new{type="number"})
 
     <input type="submit" class="btn btn-primary mt-1 mb-1" style="font-size:12px; padding:5px 7px; border-radius: 10px" value="Запит" />
 }
 <p>4. Знайти список фільмів які показують за певною локацією</p>
-@using (Html.BeginForm("MoviesByLocation", "Movies"))
+@using (Html.BeginForm("MoviesByLocation", "Movies", new { hidden = 1 }))
 {
     @Html.TextBox("location", " ", new{type="text"})
 
@@ -45,25 +45,34 @@
 
         <input type="submit" class="btn btn-primary mt-1 mb-1" style="font-size:12px; padding:5px 7px; border-radius: 10px" value="Запит" />
 }
-<p>6. Знайти  фільми, які містять такі самі жанри, що і заданий фільм</p>
-@using (Html.BeginForm("MoviesByGenre", "Movies"))
+<p>6. Знайти  фільми, які містять всі ті і тільки ті жанри, що і заданий фільм</p>
+@using (Html.BeginForm("MoviesByGenre", "Movies", new { hidden = 1 }))
 {
-    @Html.TextBox("movieName", " ", new{type="text"})
+   <div class="form-group">
+        <label asp-for="MovieName" class="control-label"></label>
+        <select asp-for="MovieId" class="form-control" asp-items="ViewBag.MovieId"></select>
+    </div>
 
             <input type="submit" class="btn btn-primary mt-1 mb-1" style="font-size:12px; padding:5px 7px; border-radius: 10px" value="Запит" />
 }
-<p>7. Знайти кінотеатри, в яких на сеансах відтворюють такі самі фільми, як і в заданому кінотеатрі (за його локацією)</p>
+<p>7. Знайти фільми, які не містять жодного жанру, що має заданий фільм</p>
 
-@using (Html.BeginForm("CinemaByMovies", "Cinemas"))
+@using (Html.BeginForm("MoviesNoGenres", "Movies", new { hidden = 1 }))
 {
-    @Html.TextBox("cinemaLocation", " ", new{type="text"})
+    <div class="form-group">
+        <label asp-for="MovieName" class="control-label"></label>
+        <select asp-for="MovieId" class="form-control" asp-items="ViewBag.MovieId"></select>
+    </div>
 
             <input type="submit" class="btn btn-primary mt-1 mb-1" style="font-size:12px; padding:5px 7px; border-radius: 10px" value="Запит" />
 }
-<p>8. Знайти акторів які знімалися у тих самих фільмах, що і заданий актор</p>
-@using (Html.BeginForm("ActorComapre", "CastMembers"))
+<p>8. Знайти фільми, що містять такі самі жанри, що і заданий фільм</p>
+@using (Html.BeginForm("MovieAllGenre", "Movies", new { hidden = 1 }))
 {
-    @Html.TextBox("actorName", " ", new{type="text"})
+    <div class="form-group">
+        <label asp-for="MovieName" class="control-label"></label>
+        <select asp-for="MovieId" class="form-control" asp-items="ViewBag.MovieId"></select>
+    </div>
 
     <input type="submit" class="btn btn-primary mt-1 mb-1" style="font-size:12px; padding:5px 7px; border-radius: 10px" value="Запит" />
 }

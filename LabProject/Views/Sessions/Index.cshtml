@@ -53,11 +53,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Movie.MovieName)
             </td>
-            <td>
-                    <a href="@Url.Action("Details", new { id = item.SessionId })"><input type="button" value="Про фільм" class="btn btn-info" /></a>
+                @if (ViewBag.hidden != 1)
+                {
+                    <td>
+                        <a href="@Url.Action("Details", new { id = item.SessionId })"><input type="button" value="Про фільм" class="btn btn-info" /></a>
                     <a href="@Url.Action("Edit", new { id = item.SessionId })"><input type="button" value="Редагувати" class="btn btn-outline-info" /></a>
                     <a href="@Url.Action("Delete", new { id = item.SessionId })"><input type="button" value="Видалити" class="btn btn-outline-info" /></a>
             </td>
+            }
         </tr>
 }
     </tbody>

@@ -13,6 +13,7 @@ using DocumentFormat.OpenXml.InkML;
 using System.Numerics;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.CodeAnalysis.Elfie.Model.Tree;
+using Microsoft.Data.SqlClient;
 
 namespace LabProject.Controllers
 {
@@ -66,34 +67,134 @@ namespace LabProject.Controllers
             return View("Index", movies.Distinct());
         }
 
-        public async Task<IActionResult> MoviesByGenre(string movieName, int hidden)
+        public async Task<IActionResult> MoviesByGenre(string movieId, int hidden)
         {
             //Знайти фільми, які містять такі самі жанри, що і заданий фільм
-            int movieId = _context.Movies.FirstOrDefault(m => m.MovieName == movieName).MovieId;
 
-            var allGenre = _context.MovieGenres
-                .Where(m => m.MovieId == movieId).ToList();
-
-            var allMovies = _context.Movies.Where(m => m.MovieId != movieId).ToList();
+            string query = @"
+                SELECT DISTINCT m.MovieId
+                FROM Movie m
+                WHERE m.MovieId <> @MovieId
+                    AND NOT EXISTS (
+                    SELECT g.GenreId
+                    FROM MovieGenre mg
+                    INNER JOIN Genre g ON g.GenreId = mg.GenreId
+                    WHERE mg.MovieId = @MovieId
+                    AND g.GenreId NOT IN (
+                    SELECT mg2.GenreId
+                    FROM MovieGenre mg2
+                    WHERE mg2.MovieId = m.MovieId
+                    )
+                )";
 
             List<Movie> movies = new List<Movie>();
 
-            foreach (var m in allMovies)
+            using (SqlConnection connection = new SqlConnection(@"Server=DESKTOP-9O78KC4\SQLEXPRESS; Database=Cinema; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate = true"))
             {
-                foreach(var g in allGenre)
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                          
-                }    
+                    command.Parameters.AddWithValue("@MovieId", movieId);
+
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int moviemdbId = reader.GetInt32(0);
+                            movies.Add(_context.Movies.FirstOrDefault(m => m.MovieId == moviemdbId));
+                        }
+                    }
+                }
             }
-
             ViewBag.hidden = hidden;
-
             return View("Index", movies);
         }
-        
 
-        // GET: Movies/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> MoviesNoGenres(string movieId, int hidden)
+        {
+            List<Movie> movies = new List<Movie>();
+
+            using (SqlConnection connection = new SqlConnection(@"Server=DESKTOP-9O78KC4\SQLEXPRESS; Database=Cinema; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate = true"))
+            {
+                string query = @"
+                    SELECT DISTINCT m.MovieId
+                    FROM Movie m
+                        WHERE NOT EXISTS (
+                        SELECT *
+                        FROM MovieGenre mg
+                        WHERE mg.MovieId = @MovieId
+                            AND mg.GenreId IN (
+                        SELECT mg2.GenreId
+                        FROM MovieGenre mg2
+                        WHERE mg2.MovieId = m.MovieId
+                        )
+                    )";
+
+                
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@MovieId", movieId); 
+
+                    connection.Open();
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int moviemdbId = reader.GetInt32(0);
+                            movies.Add(_context.Movies.FirstOrDefault(m => m.MovieId == moviemdbId));
+                        }
+                    }
+                }
+            }
+            ViewBag.hidden = hidden;
+            return View("Index", movies);
+        }
+
+        public async Task<IActionResult> MovieAllGenre(string movieId, int hidden)
+        {
+            List<Movie> movies = new List<Movie>();
+            using (SqlConnection connection = new SqlConnection(@"Server=DESKTOP-9O78KC4\SQLEXPRESS; Database=Cinema; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate = true"))
+            {
+                string query = @"
+                    SELECT DISTINCT m.MovieId
+                    FROM Movie m
+                    WHERE m.MovieId <> @MovieId
+                    AND EXISTS (
+                    SELECT mg.GenreId
+                    FROM MovieGenre mg
+                    WHERE mg.MovieId = @MovieId
+                    AND mg.GenreId IN (
+                    SELECT mg2.GenreId
+                    FROM MovieGenre mg2
+                    WHERE mg2.MovieId = m.MovieId
+                    )
+                    )";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@MovieId", movieId); // Замініть movieId на ідентифікатор заданого фільму
+
+                    connection.Open();
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int moviedbId = reader.GetInt32(0);
+                            movies.Add(_context.Movies.FirstOrDefault(m => m.MovieId == moviedbId));
+                            // Виконання необхідної логіки з результатами запиту
+                        }
+                    }
+                }
+            }
+            ViewBag.hidden = hidden;
+            return View("Index", movies);
+        }
+
+            // GET: Movies/Details/5
+            public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Movies == null)
             {

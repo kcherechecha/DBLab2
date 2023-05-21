@@ -28,19 +28,23 @@ namespace LabProject.Controllers
         //Знайти акторів які знімалися у тих самих фільмах, що і заданий актор
         public async Task<IActionResult> ActorComapre(string actorName, int hidden)
         {
+
+
             string query = @"
                 SELECT DISTINCT cm.CastMemberFullName
                 FROM MovieCast mc
-                INNER JOIN CastMember cm ON cm.CastMemberId = mc.FKCastMemberId
-                WHERE mc.FKMovieId IN (
-                SELECT mc2.FKMovieId
+                INNER JOIN CastMember cm ON cm.CastMemberId = mc.CastMemberId
+                WHERE mc.MovieId IN (
+                SELECT mc2.MovieId
                 FROM MovieCast mc2
-                INNER JOIN CastMember cm2 ON cm2.CastMemberId = mc2.FKCastMemberId
+                INNER JOIN CastMember cm2 ON cm2.CastMemberId = mc2.CastMemberId
                 WHERE cm2.CastMemberFullName = @ActorName
                 )
                 AND cm.CastMemberFullName <> @ActorName";
 
-            using (SqlConnection connection = new SqlConnection("Ваша рядок підключення до бази даних"))
+            List<CastMember> actors = new List<CastMember>();
+
+            using (SqlConnection connection = new SqlConnection(@"Server=DESKTOP-9O78KC4\SQLEXPRESS; Database=Cinema; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate = true"))
             {
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -52,11 +56,13 @@ namespace LabProject.Controllers
                         while (reader.Read())
                         {
                             string actor = reader.GetString(0);
-                            // Обробка результатів
+                            actors.Add(_context.CastMembers.FirstOrDefault(c => c.CastMemberFullName == actor));   
                         }
                     }
                 }
             }
+            ViewBag.hidden = hidden;
+            return View("Index", actors);
         }
 
         // GET: CastMembers/Details/5

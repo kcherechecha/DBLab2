@@ -5,9 +5,12 @@
 }
 
 <h1 class="mt-5">Зали в @ViewBag.CinemaName</h1>
+@if (ViewBag.hidden != 1)
+                {
     <a href='@Url.Action("Create", new { cinemaId = ViewBag.CinemaId })'>
         <input type="button" class="btn btn-info disabled mt-2 mb-3" value="Додати нову залу" />
     </a>
+                }
 <table class="table">
     <thead>
         <tr>
@@ -29,11 +32,15 @@
             <td>
                 @Html.DisplayFor(modelItem => item.HallCapacity)
             </td>
+                @if (ViewBag.hidden != 1)
+                {
             <td>
+
                 <a href="@Url.Action("Details", new { id = item.HallId })"><input type="button" value="Розклад" class="btn btn-info" /></a>
                 <a href="@Url.Action("Edit", new { id = item.HallId })"><input type="button" value="Редагувати" class="btn btn-outline-info" /></a>
                 <a href="@Url.Action("Delete", new { id = item.HallId })"><input type="button" value="Видалити" class="btn btn-outline-info" /></a>
             </td>
+                }
         </tr>
 }
     </tbody>
