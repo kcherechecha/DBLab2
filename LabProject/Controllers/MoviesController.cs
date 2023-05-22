@@ -67,25 +67,28 @@ namespace LabProject.Controllers
             return View("Index", movies.Distinct());
         }
 
-        public async Task<IActionResult> MoviesByGenre(string movieId, int hidden)
+        public async Task<IActionResult> MoviesByGenre(int movieId, int hidden)
         {
             //Знайти фільми, які містять такі самі жанри, що і заданий фільм
 
-            string query = @"
-                SELECT DISTINCT m.MovieId
-                FROM Movie m
-                WHERE m.MovieId <> @MovieId
+            string query =
+                @"SELECT DISTINCT M.MovieId
+                    FROM Movie M
+                    INNER JOIN MovieGenre MG ON M.MovieId = MG.MovieId
+                    INNER JOIN Genre G ON MG.GenreId = G.GenreId
+                    WHERE M.MovieId <> @MovieId
                     AND NOT EXISTS (
-                    SELECT g.GenreId
-                    FROM MovieGenre mg
-                    INNER JOIN Genre g ON g.GenreId = mg.GenreId
-                    WHERE mg.MovieId = @MovieId
-                    AND g.GenreId NOT IN (
-                    SELECT mg2.GenreId
-                    FROM MovieGenre mg2
-                    WHERE mg2.MovieId = m.MovieId
-                    )
-                )";
+                        SELECT *
+                          FROM MovieGenre MG2
+                          INNER JOIN Genre G2 ON MG2.GenreId = G2.GenreId
+                          WHERE MG2.MovieId = M.MovieId
+                          AND G2.GenreId NOT IN (
+                                SELECT MG3.GenreId
+                                FROM MovieGenre MG3
+                                INNER JOIN Movie M2 ON MG3.MovieId = M2.MovieId
+                                    WHERE M2.MovieId = @MovieId
+                                      )
+                                )";
 
             List<Movie> movies = new List<Movie>();
 
@@ -110,7 +113,7 @@ namespace LabProject.Controllers
             return View("Index", movies);
         }
 
-        public async Task<IActionResult> MoviesNoGenres(string movieId, int hidden)
+        public async Task<IActionResult> MoviesNoGenres(int movieId, int hidden)
         {
             List<Movie> movies = new List<Movie>();
 
@@ -152,24 +155,33 @@ namespace LabProject.Controllers
             return View("Index", movies);
         }
 
-        public async Task<IActionResult> MovieAllGenre(string movieId, int hidden)
+        public async Task<IActionResult> MovieAllGenre(int movieId, int hidden)
         {
             List<Movie> movies = new List<Movie>();
             using (SqlConnection connection = new SqlConnection(@"Server=DESKTOP-9O78KC4\SQLEXPRESS; Database=Cinema; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate = true"))
             {
                 string query = @"
-                    SELECT DISTINCT m.MovieId
-                    FROM Movie m
-                    WHERE m.MovieId <> @MovieId
-                    AND EXISTS (
-                    SELECT mg.GenreId
-                    FROM MovieGenre mg
-                    WHERE mg.MovieId = @MovieId
-                    AND mg.GenreId IN (
-                    SELECT mg2.GenreId
-                    FROM MovieGenre mg2
-                    WHERE mg2.MovieId = m.MovieId
-                    )
+                    SELECT m.MovieId
+                        FROM Movie m
+                        WHERE EXISTS (
+                            SELECT mg.GenreId
+                            FROM MovieGenre mg
+                            WHERE mg.MovieId = @MovieId
+                                AND mg.GenreId IN (
+                                SELECT mg2.GenreId
+                                FROM MovieGenre mg2
+                                WHERE mg2.MovieId = m.MovieId
+                                )
+                            )
+                            AND NOT EXISTS (
+                            SELECT mg.GenreId
+                            FROM MovieGenre mg
+                            WHERE mg.MovieId = @MovieId
+                                AND mg.GenreId NOT IN (
+                                SELECT mg2.GenreId
+                                FROM MovieGenre mg2
+                                WHERE mg2.MovieId = m.MovieId
+                                )
                     )";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -183,7 +195,9 @@ namespace LabProject.Controllers
                         while (reader.Read())
                         {
                             int moviedbId = reader.GetInt32(0);
-                            movies.Add(_context.Movies.FirstOrDefault(m => m.MovieId == moviedbId));
+                            var obj = _context.Movies.FirstOrDefault(m => m.MovieId == moviedbId && m.MovieId != movieId);
+                            if (obj != null)
+                                movies.Add(obj);
                             // Виконання необхідної логіки з результатами запиту
                         }
                     }

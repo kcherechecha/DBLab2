@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using LabProject.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using DocumentFormat.OpenXml.Bibliography;
+using Microsoft.Data.SqlClient;
 
 namespace LabProject.Controllers
 {
@@ -33,7 +34,7 @@ namespace LabProject.Controllers
         public async Task<IActionResult> SessionsInCity(string cityName, string movieName, int hidden)
         {
 
-           //var cinema = _context.Cinemas.Where(c => c.CinemaName == cityName);
+            var cinema = _context.Cinemas.Where(c => c.CinemaName == cityName);
 
             var query = _context.Sessions
                 .Include(h => h.Hall)
@@ -41,6 +42,36 @@ namespace LabProject.Controllers
                 .Include(m => m.Movie)
                 .Include(s => s.Status)
                 .Where(m => m.Movie.MovieName == movieName && m.Hall.Cinema.CinemaAddress == cityName).ToList();
+
+            //string query = @"
+            //SELECT s.SessionId
+            //FROM Session s
+            //JOIN Hall h ON s.HallId = h.HallId
+            //JOIN Cinema c ON h.CinemaId = c.CinemaId
+            //JOIN Movie m ON s.MovieId = m.MovieId
+            //WHERE c.CinemaAddress = @CinemaAddress
+            //AND m.MovieName = @MovieName";
+
+            //List<Session> sessions = new List<Session>();
+
+            //using (SqlConnection connection = new SqlConnection(@"Server=DESKTOP-9O78KC4\SQLEXPRESS; Database=Cinema; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate = true"))
+            //{
+            //    using (SqlCommand command = new SqlCommand(query, connection))
+            //    {
+            //        command.Parameters.AddWithValue("@CinemaAddress", cityName);
+            //        command.Parameters.AddWithValue("@MovieName", movieName);
+
+            //        connection.Open();
+            //        using (SqlDataReader reader = command.ExecuteReader())
+            //        {
+            //            while (reader.Read())
+            //            {
+            //                int sessionDbId = reader.GetInt32(0);
+            //                sessions.Add(_context.Sessions.FirstOrDefault(s => s.SessionId == sessionDbId));
+            //            }
+            //        }
+            //    }
+            //}
 
             ViewBag.hidden = hidden;
             return View("Index", query);
