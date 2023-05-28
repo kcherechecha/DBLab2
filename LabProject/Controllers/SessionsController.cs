@@ -9,6 +9,7 @@ using LabProject.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.Data.SqlClient;
+using ClosedXML.Excel;
 
 namespace LabProject.Controllers
 {
@@ -43,37 +44,10 @@ namespace LabProject.Controllers
                 .Include(s => s.Status)
                 .Where(m => m.Movie.MovieName == movieName && m.Hall.Cinema.CinemaAddress == cityName).ToList();
 
-            //string query = @"
-            //SELECT s.SessionId
-            //FROM Session s
-            //JOIN Hall h ON s.HallId = h.HallId
-            //JOIN Cinema c ON h.CinemaId = c.CinemaId
-            //JOIN Movie m ON s.MovieId = m.MovieId
-            //WHERE c.CinemaAddress = @CinemaAddress
-            //AND m.MovieName = @MovieName";
-
-            //List<Session> sessions = new List<Session>();
-
-            //using (SqlConnection connection = new SqlConnection(@"Server=DESKTOP-9O78KC4\SQLEXPRESS; Database=Cinema; Trusted_Connection=True; MultipleActiveResultSets=true; TrustServerCertificate = true"))
-            //{
-            //    using (SqlCommand command = new SqlCommand(query, connection))
-            //    {
-            //        command.Parameters.AddWithValue("@CinemaAddress", cityName);
-            //        command.Parameters.AddWithValue("@MovieName", movieName);
-
-            //        connection.Open();
-            //        using (SqlDataReader reader = command.ExecuteReader())
-            //        {
-            //            while (reader.Read())
-            //            {
-            //                int sessionDbId = reader.GetInt32(0);
-            //                sessions.Add(_context.Sessions.FirstOrDefault(s => s.SessionId == sessionDbId));
-            //            }
-            //        }
-            //    }
-            //}
+            
 
             ViewBag.hidden = hidden;
+            MovieStatic.sessionSet(query);
             return View("Index", query);
         }
 
@@ -288,5 +262,39 @@ namespace LabProject.Controllers
         {
           return (_context.Sessions?.Any(e => e.SessionId == id)).GetValueOrDefault();
         }
+
+        public ActionResult Export()
+        {
+            using (XLWorkbook workbook = new XLWorkbook())
+            {
+
+                var sessions = MovieStatic.sessions;
+
+                ViewBag.hidden = 1;
+                if (sessions.Count == 0) return View("Index", sessions);
+
+                foreach (var session in sessions)
+                {
+                    var worksheet = workbook.Worksheets.Add(session.SessionNumber);
+                    worksheet.Cell("A1").Value = "Номер сеансу";
+                    worksheet.Cell("B1").Value = "Дата";
+                    worksheet.Row(1).Style.Font.Bold = true;
+
+                    worksheet.Cell(2, 1).Value = session.SessionNumber;
+                    worksheet.Cell(2, 2).Value = session.SessionDateTime;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    stream.Flush();
+                    return new FileContentResult(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                    {
+                        FileDownloadName = $"halls.xlsx"
+                    };
+                }
+            }
+        }
     }
 }
+

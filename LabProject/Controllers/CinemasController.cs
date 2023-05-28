@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LabProject.Models;
 using System.ComponentModel;
+using ClosedXML.Excel;
 
 namespace LabProject.Controllers
 {
@@ -42,7 +43,7 @@ namespace LabProject.Controllers
                 cinemas.Add(q.Hall.Cinema);
 
             ViewBag.hidden = hidden;
-
+            MovieStatic.cinemaSet(cinemas);
             return View("Index", cinemas);
         }
 
@@ -213,24 +214,37 @@ namespace LabProject.Controllers
           return (_context.Cinemas?.Any(e => e.CinemaId == id)).GetValueOrDefault();
         }
 
-        //check if there is a cinema with the same address
-       /* [HttpPost]
-        public ActionResult AddressExists(string CinemaAddress)
+        public ActionResult Export()
         {
-            bool addressExists = false;
-            
-            var cinema = _context.Cinemas.Where(c => c.CinemaAddress == CinemaAddress).FirstOrDefault();
-
-            if (cinema != null) addressExists = true;
-
-            if(addressExists == true)
+            using (XLWorkbook workbook = new XLWorkbook())
             {
-                return Content("false");
+
+                var cinemas = MovieStatic.cinemas;
+
+                ViewBag.hidden = 1;
+                if (cinemas.Count == 0) return View("Index", cinemas);
+
+                foreach (var cinema in cinemas)
+                {
+                    var worksheet = workbook.Worksheets.Add(cinema.CinemaName);
+                    worksheet.Cell("A1").Value = "Назва";
+                    worksheet.Cell("B1").Value = "Адреса";
+                    worksheet.Row(1).Style.Font.Bold = true;
+
+                    worksheet.Cell(2, 1).Value = cinema.CinemaName;
+                    worksheet.Cell(2, 2).Value = cinema.CinemaAddress;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    stream.Flush();
+                    return new FileContentResult(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                    {
+                        FileDownloadName = $"cinemas.xlsx"
+                    };
+                }
             }
-            else
-            {
-                return Content("true");
-            }
-        }*/
+        }
     }
 }

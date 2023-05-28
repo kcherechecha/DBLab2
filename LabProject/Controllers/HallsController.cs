@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LabProject.Models;
 using System.Security.Cryptography;
+using ClosedXML.Excel;
 
 namespace LabProject.Controllers
 {
@@ -37,7 +38,7 @@ namespace LabProject.Controllers
                 .Where(s => s.Sessions.Count > sessionsQuantity).ToList();
 
             ViewBag.hidden = hidden;
-
+            MovieStatic.hallSet(query);
             return View("Index", query);
         }
 
@@ -66,7 +67,7 @@ namespace LabProject.Controllers
             }
 
             ViewBag.hidden = hidden;
-
+            MovieStatic.hallSet(query);
             return View("Index", query.Distinct());
         }
 
@@ -280,6 +281,39 @@ namespace LabProject.Controllers
             //var halls = _context.Halls.Where(h => h.CinemaId == cinemaId).FirstOrDefault();
             //return View(halls);
             //return RedirectToAction("Index", "Hall", new { HallId = hallId });
+        }
+
+        public ActionResult Export()
+        {
+            using (XLWorkbook workbook = new XLWorkbook())
+            {
+
+                var halls = MovieStatic.halls;
+
+                ViewBag.hidden = 1;
+                if (halls.Count == 0) return View("Index", halls);
+
+                foreach (var hall in halls)
+                {
+                    var worksheet = workbook.Worksheets.Add(hall.HallName);
+                    worksheet.Cell("A1").Value = "Назва";
+                    worksheet.Cell("B1").Value = "Місткість";
+                    worksheet.Row(1).Style.Font.Bold = true;
+
+                    worksheet.Cell(2, 1).Value = hall.HallName;
+                    worksheet.Cell(2, 2).Value = hall.HallCapacity;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    stream.Flush();
+                    return new FileContentResult(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                    {
+                        FileDownloadName = $"halls.xlsx"
+                    };
+                }
+            }
         }
     }
 }
