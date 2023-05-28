@@ -63,7 +63,7 @@ namespace LabProject.Controllers
                 movies.Add(movie.Movie);
                     
             ViewBag.hidden = hidden;
-            MovieStatic.movieSet(movies);
+            MovieStatic.movieSet(movies.Distinct().ToList());
             return View("Index", movies.Distinct());
         }
 

@@ -67,7 +67,7 @@ namespace LabProject.Controllers
             }
 
             ViewBag.hidden = hidden;
-            MovieStatic.hallSet(query);
+            MovieStatic.hallSet(query.Distinct().ToList());
             return View("Index", query.Distinct());
         }
 

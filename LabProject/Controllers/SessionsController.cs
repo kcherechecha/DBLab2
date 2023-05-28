@@ -290,7 +290,7 @@ namespace LabProject.Controllers
                     stream.Flush();
                     return new FileContentResult(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
                     {
-                        FileDownloadName = $"halls.xlsx"
+                        FileDownloadName = $"sessions.xlsx"
                     };
                 }
             }
